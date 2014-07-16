@@ -18,10 +18,11 @@ window.sulia.page.deal = {
     },
 
     render_post_table: function() {
-        var content_html = '';
+        var content_html = '',
+            URL_LEN = 19;
         $.each(window.sulia.data.posts, function(index, post) {
             post.sum_qual_ref = window.sulia.page.deal.sum_referrals(post.qualified_referrals);
-            post.trunc_link = window.sulia.page.deal.truncate_link(post.sulia_select_url, 19);
+            post.trunc_link = window.sulia.page.deal.truncate_link(post.sulia_select_url, URL_LEN);
             post.value_currency = window.sulia.page.deal.display_currency(post.value);
             content_html += Handlebars.templates.deal_post_table(post);
         });
@@ -34,9 +35,7 @@ window.sulia.page.deal = {
             padding: 0
         });
         window.sulia.page.deal.insert_ref_values(post);
-        $('body').on('click', '.close_button', function () {
-            $.fancybox.close();
-        });
+        $('body').on('click', '.close_button', $.fancybox.close;
     },
 
     render_post_graph: function() {
@@ -189,7 +188,12 @@ window.sulia.page.deal = {
 
     //uses values to initialize graph on page
     initialize_referrals: function() {
-        var ratios = [window.sulia.data.qualified_referrals.us_desk, window.sulia.data.qualified_referrals.us_mob, window.sulia.data.qualified_referrals.intl_desk, window.sulia.data.qualified_referrals.intl_mob];
+        var ratios = [
+            window.sulia.data.qualified_referrals.us_desk, 
+            window.sulia.data.qualified_referrals.us_mob, 
+            window.sulia.data.qualified_referrals.intl_desk, 
+            window.sulia.data.qualified_referrals.intl_mob
+        ];
         window.sulia.page.deal.identify_qualified('#us_desk_qualified', '#us_desk_ref');
         window.sulia.page.deal.identify_qualified('#us_mob_qualified', '#us_mob_ref');
         window.sulia.page.deal.identify_qualified('#intl_desk_qualified', '#intl_desk_ref');
@@ -249,6 +253,7 @@ window.sulia.page.deal = {
     },
 
     //colors week deals charts according to width
+    //separated into six color groups
     color_graphs: function(bar, values, color) {
         var $bar = $(bar),
             sizes = [];
