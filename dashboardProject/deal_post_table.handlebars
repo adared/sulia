@@ -1,0 +1,32 @@
+<tr class="post-item clickable_row {{#unless qualified}}unqual-row{{/unless}}" id="{{post_id}}">
+  <td class="post-timestamp">
+      <p class="post-date"></p>
+      <p class="post-time"></p>
+  </td>
+  <td class="post-title">
+      {{# unless qualified}}
+          <div class="unqual-post">
+              <img class="status_icon" src="{{ MEDIA_URL }}images/glyphicons_halflings/glyphicons_halflings_013_remove.png">
+              <p>NOT QUALIFIED</p>
+          </div>
+      {{/unless}}
+      {{{title}}}
+  </td>
+  {{#if sulia_select_url}}
+      <td class="post-link">
+          <a class="link-out" href="{{sulia_select_url}}">{{trunc_link}}</a>
+      </td>
+  {{/if}}
+  <td class="post-refs">
+      <div class="post-ref-bar">
+          <p class="post-ref-in hidden">{{sum_qual_ref}}</p>
+      </div>
+      <p class="post-ref-out hidden">{{sum_qual_ref}}</p>
+  </td>
+  <td class="post-earn">
+      <div class="post-earn-bar">
+          <p class="post-earn-in hidden">${{value_currency}}</p>
+      </div>
+      <p class="post-earn-out hidden">${{value_currency}}</p>
+  </td>
+</tr>

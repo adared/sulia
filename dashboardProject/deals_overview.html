@@ -1,0 +1,82 @@
+{% extends 'base_1col.html' %}
+{% load customtags %}
+{% if page_model.source|is_user:request.user or request.user.is_staff %}
+{% block main-content-area %}
+    <div class="main_content">
+        <div class="all-deals-head">
+            <h2>My Deals</h2>
+            <hr>
+        </div>
+        <div class="year_heading">
+            <p>{% now "Y" %}</p>
+            <hr>
+        </div>
+        {% for month in deal_months %}
+            <table class="month_table">
+                <thead id="{{ month.month }}">
+                    <tr class="table_head">
+                        <th>
+                            <div class="chevron right"></div>
+                            {{ month.month_str }}
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>${{ month.earnings|currency }}</th>
+                    </tr>
+                </thead>
+                <tbody class="hidden">
+                    <tr class="table_labels">
+                        <td>Week</td>
+                        <td>Deals</td>
+                        <td>Posts</td>
+                        <td>Target</td>
+                        <td>Completed</td>
+                        <td>Earnings</td>
+                    </tr>
+                    {% for week in month.sorted_weeks %}
+                        <tr class="wk-list-item clickable_row" data-url="{% url 'deal:deal_week' %}?delta={{ week.offset }}{% if deal_user_id %}&uid={{ deal_user_id }}{% endif %}">
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    {{ week.start|date:"F j" }} &ndash; {{ week.end|date:"F j" }}
+                                    <div class="vertical_rule"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    {{ week.deals }}
+                                    <div class="vertical_rule"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    {{ week.qualified_posts }}
+                                    <div class="vertical_rule"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    ${{ week.target|currency }}
+                                    <div class="vertical_rule"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    {% widthratio week.earnings week.target 100 %}%
+                                    <div class="vertical_rule"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tbl-cell-relative wk-cell">
+                                    ${{ week.earnings|currency }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% endif %}

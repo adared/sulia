@@ -1,0 +1,269 @@
+{% extends 'base_1col.html' %}
+{% load customtags %}
+{% if page_model.source|is_user:request.user or request.user.is_staff %}
+{% block extradata %}
+    window.sulia.data.posts = {{ deal.json_posts|safe }};
+    window.sulia.data.qualified_referrals = {{ deal.qualified_referrals.as_json|safe }};
+    window.sulia.data.is_qualified = {{ deal.qualified_posts }} >= {{ deal.min_posts }};
+    window.sulia.data.min_posts = {{ deal.min_posts }};
+    {% if deal.terms_flat_rate %}
+        window.sulia.data.target = {{ deal.min_payout }};
+    {% else %}
+        window.sulia.data.target = {{ deal.max_payout }};
+    {% endif %}
+    {% if deal.terms_flat_rate %}
+        window.sulia.data.percent_complete = {% widthratio deal.current_value deal.min_payout 100 %};
+        window.sulia.data.current = {{ deal.current_value }};
+    {% elif deal.qualified_posts < deal.min_posts %}
+        window.sulia.data.percent_complete = {% widthratio deal.qualified_value deal.max_payout 100 %};
+        window.sulia.data.current = {{ deal.qualified_value }};
+    {% else %}
+        window.sulia.data.percent_complete = {% widthratio deal.current_value deal.max_payout 100 %};
+        window.sulia.data.current = {{ deal.current_value }};
+    {% endif %}
+    window.sulia.data.qual_ref = {
+        {% if deal.val_per_referral > 0 %}
+            us_desk: {{ deal.val_per_referral }},
+            us_mob: {{ deal.val_per_referral }},
+            intl_desk: {{ deal.val_per_referral }},
+            intl_mob: {{ deal.val_per_referral }}
+        {% else %}
+            {% if deal.val_per_ref_US_desk > 0 %}
+                us_desk: {{ deal.val_per_ref_US_desk }},
+            {% else %}
+                us_desk: 0,
+            {% endif %}
+            {% if deal.val_per_ref_US_mob > 0 %}
+                us_mob: {{ deal.val_per_ref_US_mob }},
+            {% else %}
+                us_mob: 0,
+            {% endif %}
+            {% if deal.val_per_ref_INTL_desk > 0 %}
+                intl_desk: {{ deal.val_per_ref_INTL_desk }},
+            {% else %}
+                intl_desk: 0,
+            {% endif %}
+            {% if deal.val_per_ref_INTL_desk > 0 %}
+                intl_mob: {{ deal.val_per_ref_INTL_mob }}
+            {% else %}
+                intl_mob: 0
+            {% endif %}
+        {% endif %}
+    };
+{% endblock %}
+{% block main-content-area %}
+{% spaceless %}
+    <div class="breadcrumbs">
+        <a href="{% url 'deal:deal_overview' %}{% if deal_user_id %}?uid={{ deal_user_id }}{% endif %}">My Deals</a>
+        <a href="{% url 'deal:deal_week' %}?delta={{ deal.offset }}{% if deal_user_id %}&uid={{ deal_user_id }}{% endif %}"><span>?</span> {{ deal.start_time|date:"F j" }} &ndash; {{ deal.end_time|date:"F j" }}</a>
+        <p><span>?</span> {{ deal.name }}</p>
+    </div>
+    <div class="main_content">
+        <div class="deal_header">
+            <div id="dates">
+                <p id="start-date">{{ deal.start_time|date:"F j Y g:iA" }} UTC &ndash;</p>
+                <p id="end-date">{{ deal.end_time|date:"F j Y g:iA" }} UTC</p>
+            </div>
+            <div id="deal_title">
+                {%  if deal.is_external %}
+                    {% if deal.image_url == None %}
+                        <img class="brand_logo" src="{{ MEDIA_URL }}images/sulia-default-image.png">
+                    {% else %}
+                        <img class="brand_logo" src="{{ deal.image_url }}">
+                    {% endif %}
+                {% else %}
+                    <img class="brand_logo" src="{{ MEDIA_URL }}images/sulia-s-200x200.fw.png">
+                {% endif %}
+                <h2>{{deal.name}}</h2>
+            </div>
+            <p id="deal_id">Deal ID: {{ deal.deal_id }}</p>
+        </div>
+
+        <div id="cash_bar">
+            <div id="total_remaining">
+                <div id="total_earned">
+                    {% if deal.terms_flat_rate %}
+                        <p id="total_percent" class="label hidden">{% widthratio deal.current_value deal.min_payout 100 %}%</p>
+                        <p id="earned_current" class="hidden">${{ deal.current_value|currency }}</p>
+                        <p id="earned_target" class="hidden">${{ deal.min_payout|currency }}</p>
+                    {% elif deal.qualified_posts < deal.min_posts %}
+                        <p id="total_percent" class="label hidden">{% widthratio deal.qualified_value deal.max_payout 100 %}%</p>
+                        <p id="earned_current" class="hidden">${{ deal.qualified_value|currency }}</p>
+                        <p id="earned_target" class="hidden">${{ deal.max_payout|currency }}</p>
+                    {% else %}
+                        <p id="total_percent" class="label hidden">{% widthratio deal.current_value deal.max_payout 100 %}%</p>
+                        <p id="earned_current" class="hidden">${{ deal.current_value|currency }}</p>
+                        <p id="earned_target" class="hidden">${{ deal.max_payout|currency }}</p>
+                    {% endif %}
+                </div>
+                {% if deal.terms_flat_rate %}
+                    <p id="remaining_current" class="hidden">${{ deal.current_value|currency }}</p>
+                    <p id="remaining_target" class="hidden">${{ deal.min_payout|currency }}</p>
+                {% elif deal.qualified_posts < deal.min_posts %}
+                    <p id="remaining_current" class="hidden">${{ deal.qualified_value|currency }}</p>
+                    <p id="remaining_target" class="hidden">${{ deal.max_payout|currency }}</p>
+                {% else %}
+                    <p id="remaining_current" class="hidden">${{ deal.current_value|currency }}</p>
+                    <p id="remaining_target" class="hidden">${{ deal.max_payout|currency }}</p>
+                {% endif %}
+            </div>
+            {% if deal.qualified_posts < deal.min_posts and deal.qualified_value > 0 %}
+                <p class="label" id="total_current">expected <span>with at least {{ deal.min_posts }} qualified posts</span></p>
+            {% else %}
+                <p class="label" id="total_current">current</p>
+            {% endif %}
+            <p class="label" id="total_target">target</p>
+        </div>
+
+        <div id="referrals_graph">
+            <h3 class="graph-head">referrals</h3>
+            <div class="labels_section">
+                <div id="us_desk_label">
+                    {% if deal.val_per_ref_US_desk > 0 or deal.val_per_referral > 0 %}
+                        <p id="us_desk_qualified"><img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png">QUALIFIED</p>
+                    {% endif %}
+                    <p>US Desktop &amp; Tablet</p>
+                </div>
+
+                <div id="us_mob_label">
+                    {% if deal.val_per_ref_US_mob > 0 or deal.val_per_referral > 0 %}
+                        <p id="us_mob_qualified"><img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png">QUALIFIED</p>
+                    {% endif %}
+                    <p>US Mobile</p>
+                </div>
+
+                <div id="intl_desk_label">
+                    {% if deal.val_per_ref_INTL_desk > 0 or deal.val_per_referral > 0 %}
+                        <p id="intl_desk_qualified"><img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png">QUALIFIED</p>
+                    {% endif %}
+                    <p>INTL Desktop &amp; Tablet</p>
+                </div>
+
+                <div id="intl_mob_label">
+                    {% if deal.val_per_ref_INTL_mob > 0 or deal.val_per_referral > 0 %}
+                        <p id="intl_mob_qualified"><img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png">QUALIFIED</p>
+                    {% endif %}
+                    <p>INTL Mobile</p>
+                </div>
+            </div>
+
+            <div class="bar_section">
+                <div class="bar-wrapper">
+                    <div id="us_desk_ref" class="bar_in_chart">
+                        <p id="us_desk_below" class="hidden">{{ deal.qualified_referrals.us_desk }}</p>
+                    </div>
+                    <p id="us_desk_above" class="hidden">{{ deal.qualified_referrals.us_desk }}</p>
+                </div>
+
+                <div class="bar-wrapper">
+                    <div class="bar_in_chart" id="us_mob_ref">
+                        <p  id="us_mob_below" class="hidden">{{ deal.qualified_referrals.us_mob }}</p>
+                    </div>
+                    <p  id="us_mob_above" class="hidden">{{ deal.qualified_referrals.us_mob }}</p>
+                </div>
+
+                <div class="bar-wrapper">
+                    <div class="bar_in_chart" id="intl_desk_ref">
+                        <p  id="intl_desk_below" class="hidden">{{ deal.qualified_referrals.intl_desk }}</p>
+                    </div>
+                    <p  id="intl_desk_above" class="hidden">{{ deal.qualified_referrals.intl_desk }}</p>
+                </div>
+
+                <div class="bar-wrapper">
+                    <div class="bar_in_chart" id="intl_mob_ref">
+                        <p  id="intl_mob_below" class="hidden">{{ deal.qualified_referrals.intl_mob }}</p>
+                    </div>
+                    <p  id="intl_mob_above" class="hidden">{{ deal.qualified_referrals.intl_mob }}</p>
+                </div>
+            </div>
+        </div>
+
+		<div id="deal_posts">
+            <div class="heading">
+                <h2>posts</h2>
+                <hr />
+            </div>
+			<table id="post_table">
+				<tr class="table_head">
+			        <th>Date</th>
+			        <th>Post</th>
+                    {% if deal.is_external %}
+                        <th>Link</th>
+                    {% endif %}
+			        <th>Qualified Referrals</th>
+			        <th>Earnings</th>
+			    </tr>
+			</table>
+            <p class="post-control">See All</p>
+            <p class="post-control hidden">See Fewer Posts</p>
+		</div>
+
+        <div id="deal_details">
+            <div class="heading">
+                <h2>details</h2>
+                <hr />
+            </div>
+			<table id="details_table">
+                <tr class="table_head">
+                    <th>Rate</th>
+                    <th>Terms</th>
+                    {% if deal.terms_pay_floor or deal.terms_guarantee_min %}
+                        <th>Guarantee</th>
+                    {% endif %}
+                    <th>Target</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                </tr>
+
+                {% include "deals/deal_details_table.html" %}
+            </table>
+        </div>
+
+        {% if deal.is_external %}
+            <div id="deal_approved_content">
+                <div class="heading">
+                    <h2>approved content</h2>
+                    <hr />
+                </div>
+                <div class="approved-content">
+                    {% if deal.valid_urls.exact_sub_match|length > 0 %}
+                        <p class="app-guideline">A link is approved when its URL exactly matches or begins with...</p>
+                        <ul class="bulleted_list app-urls">
+                            {% for url in deal.valid_urls.exact_sub_match %}
+                            <li><a class="app-link" href="{{ url }}">{{ url }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% if deal.valid_urls.exact_match|length > 0 %}
+                            <p class="and">AND</p>
+                        {% endif %}
+                    {% endif %}
+                    {% if deal.valid_urls.exact_match|length > 0 %}
+                        <p class="app-guideline">A link is approved when its URL exactly matches...</p>
+                        <ul class="bulleted_list">
+                            {% for url in deal.valid_urls.exact_match %}
+                            <li><a class="app-link" href="{{ url }}">{{ url }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% if deal.valid_urls.sub_match|length > 0 %}
+                            <p class="and">AND</p>
+                        {% endif %}
+                    {% endif %}
+                    {% if deal.valid_urls.sub_match|length > 0%}
+                        <p class="app-guideline">A link is approved when its URL begins with...</p>
+                        <ul class="bulleted_list">
+                            {% for url in deal.valid_urls.sub_match %}
+                            <li><a class="app-link" href="{{ url }}">{{ url }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock %}
+{% endif %}
+
+{% block image-error-cleanup %}
+    <script type="text/javascript">$('img').error(function() {if ($(this).hasClass('brand_logo')) {this.src="{{ MEDIA_URL }}images/sulia-default-image.png";} else { var $images = $('img[src="' + this.src + '"]'); $images.remove(); }});</script>
+{% endblock %}

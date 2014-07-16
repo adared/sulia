@@ -1,0 +1,1297 @@
+
+/******************************************************************
+                      Deal Dashboard
+******************************************************************/
+/* General styles */
+
+@mixin border_box_all {
+  * {
+    @include border_box;
+  }
+}
+
+.main_content {
+  @include border_box_all;
+  background-color: white;
+  @include border-radius(4px);
+  width: 97%;
+  height: 100%;
+  margin: 0 auto;
+  margin-top: 8px;
+  font-weight: 300;
+  font-size: 1em;
+  line-height: 1.4;
+  padding: 5px;
+  padding-bottom: 80px;
+  font-family: $hel_light;
+  color: #4F4F4F;
+  min-width: 1145px;
+}
+
+.breadcrumbs {
+  p,
+  a {
+    display: inline-block;
+    margin-left: .4em;
+    color: $sulia-orange;
+    font: {
+      family: $hel_light;
+      weight: 300;
+      size: 1em;
+    }
+    span {
+      color: #707070;
+    }
+  }
+  p {
+    color: black;
+  }
+  margin-top: .5em;
+  margin-left: 1em;
+}
+
+#deal_details {
+  height: 100%;
+  clear: both;
+}
+
+/* Header */
+
+#active_deals_title,
+.heading,
+.all-deals-head {
+  @include border_box_all;
+  margin-top: 10px;
+  text-align: center;
+  margin-bottom: 1.5em;
+  h2 {
+    text-transform: uppercase;
+    font: {
+      family: $hel_light;
+      weight: 300;
+      size: 1.3em;
+    }
+  }
+  hr {
+    width: 7%;
+  }
+  p {
+    display: inline-block;
+    font-family: $hel_light;
+    font-weight: 300;
+    margin-left: .3em;
+    text-transform: capitalize;
+  }
+}
+
+.heading {
+  margin-top: 80px;
+}
+
+/* Graphs */
+
+#cash_bar, .post-graph {
+  @include border_box_all;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 80px;
+  margin-bottom: 80px;
+  position: relative;
+  #total_earned, #total_remaining {
+    height: 98px;
+    line-height: 98px;
+    margin: 0;
+    margin-bottom: 5px;
+    vertical-align: middle;
+  }
+  #total_remaining,
+  .graph-shell {
+    position: relative;
+    text-align: right;
+    padding: 0 15px;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #F5F2EB),
+        color-stop(1, #F0E9DD)
+    );
+    background-image: -o-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -moz-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -webkit-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -ms-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: linear-gradient(to bottom, #F5F2EB 0%, #F0E9DD 100%);
+    width: 100%;
+    p {
+      font: {
+        family: $hel_reg;
+        size: 2em;
+      }
+      vertical-align: middle;
+      color: #585858;
+      float: right;
+    }
+    #remaining_current,
+    .rem-num-posts {
+      float: left;
+    }
+  }
+  #total_earned,
+  .posts-current {
+    width: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background-color: $sulia-orange;
+    #total_percent {
+      position: absolute;
+      z-index: 99;
+      top: -3em;
+      right: -1em;
+      font: {
+        family: $hel_light;
+        size: 1.3em;
+        weight: 300;
+      }
+      text-transform: uppercase;
+    }
+    #earned_current,
+    #earned_target,
+    .current-num-posts,
+    .current-target-posts {
+      font: {
+        family: $hel_reg;
+        size: 2em;
+      }
+      vertical-align: middle;
+      color: white;
+      float: right;
+      margin-right: 15px;
+    }
+    #earned_current,
+    .current-num-posts {
+      float: left;
+      margin-left: 15px;
+    }
+  }
+  .label {
+    font: {
+      family: $hel_light;
+      size: 1.3em;
+      weight: 300;
+    }
+    text-transform: uppercase;
+  }
+  #total_current,
+  .lab-current {
+    float: left;
+    margin-left: 20px;
+    margin-bottom: 0;
+    span {
+      text-transform: lowercase;
+      font-size: .8em;
+      color: #909090;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  #total_target,
+  .lab-target {
+    float: right;
+    margin-right: 20px;
+  }
+}
+
+/* Tables */
+
+#deals_list, #post_table, #details_table, .month_table, .post-ref-table {
+  @include border_box_all;
+  width: 97%;
+  margin: 0 auto;
+  border: 1px solid #B0B0B0;
+  margin-top: 25px;
+  margin-bottom: 65px;
+  .table_head {
+    background-color: #E6E6E6;
+    color: #4E4E4E;
+    th {
+      padding: 0.7em;
+      text-align: center;
+    }
+  }
+  .deal_list_item, .details_row, .wk-list-item, .post-item, .popup-refs-row {
+    border-top: 1px solid #B0B0B0;
+    height: 1px;
+    &:nth-child(odd) {
+      background-color: #F6F6F6;
+    }
+    td {
+      position: relative;
+    }
+    .vertical_rule {
+      width: 1px;
+      height: 66%;
+      border-right: 1px solid #B0B0B0;
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 17%;
+    }
+    .title_cell {
+      .deal_name {
+        display: inline-block;
+        width: 70%;
+        p {
+          font: {
+            family: $hel_reg;
+            weight: 400;
+            size: 1em;
+          }
+          line-height: 1.8em;
+        }
+      }
+      .brand_logo {
+        display: inline-block;
+        vertical-align: top;
+        width: 70px;
+        height: 70px;
+        margin-right: 5px;
+      }
+    }
+    .rate_cell {
+      padding: 0;
+      p {
+        font-size: 1em;
+      }
+      span {
+        margin-left: 8px;
+        font: {
+          family: $hel_bold;
+          size: 1.3em;
+          weight: 700;
+        }
+      }
+    }
+    .terms_cell {
+      padding: 0;
+      text-align: center;
+      width: 12.5%;
+      .main_term {
+        font: {
+          family: $hel_bold;
+          size: 0.875em;
+          weight: 700;
+        }
+      }
+      ul li {
+        font-size: 1em;
+        p {
+          font-size: 1em;
+        }
+      }
+      #min_posts {
+        font-size: 1.125em;
+      }
+    }
+    .target_cell {
+      padding: 0;
+      p:first-child {
+        font: {
+        family: $hel_bold;
+        size: 1.5em;
+        weight: 700;
+        }
+      }
+      text-align: center;
+      width: 11.5%;
+    }
+    .status_cell {
+      text-align: center;
+      width: 12.5%;
+      padding: 0;
+      .status_icon {
+        margin-right: .4em;
+      }
+      p {
+        display: inline-block;
+        font-size: 1em;
+      }
+      .deal_respond {
+        left: 2em;
+        .deal_respond_yes, .deal_respond_no {
+          padding: 0.5em 0.8em;
+        }
+        .deal_respond_yes {
+          border-bottom: 1px solid #B0B0B0;
+        }
+      }
+    }
+    .payment_cell {
+      padding: 0;
+      text-align: center;
+      width: 13.5%;
+      #pay_amt {
+        font: {
+          family: $hel_bold;
+          size: 1.3em;
+          weight: 700;
+        }
+      }
+      p:first-child {
+        display: inline-block;
+      }
+      .payment_details {
+        p {
+          margin-left: 0.8em;
+          color: #606060;
+        }
+        p:first-child {
+          font: {
+            family: $hel_bold;
+            weight: 700;
+          }
+        }
+        p:last-child {
+          color: #909090;
+        }
+        right: 1em;
+        padding: 0.5em 0;
+        width: 18em;
+        text-align: left;
+        hr {
+          margin: 0.5em 0;
+          border: none;
+          border-top: 1px solid #c9c9c9;
+        }
+      }
+    }
+  }
+  .hover {
+    cursor: pointer;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #F5F2EB),
+        color-stop(1, #F0E9DD)
+    );
+    background-image: -o-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -moz-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -webkit-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: -ms-linear-gradient(bottom, #F5F2EB 0%, #F0E9DD 100%);
+    background-image: linear-gradient(to bottom, #F5F2EB 0%, #F0E9DD 100%);
+  }
+  .details_row {
+    .rate_cell {
+      width: 23%;
+    }
+    .terms_cell {
+      width: 30%;
+      text-align: left;
+      p:first-child {
+        font-size: 1em;
+      }
+      li {
+        font-size: .9em;
+        p {
+          display: inline-block;
+          font-size: 1em;
+        }
+        img {
+          height: 20px;
+          width: 20px;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+  	DEAL VIEW
+   ========================================================================== */
+
+/* Header */
+
+.deal_header {
+  @include border_box_all;
+  position: relative;
+  margin-bottom: 17em;
+  #dates {
+    position: absolute;
+    top: 2%;
+    left: 1%;
+    p {
+      display: inline-block;
+      margin-left: .3em;
+      font: {
+        family: $hel_light;
+        size: .95em;
+        weight: 300;
+      }
+      color: #858585;
+    }
+  }
+  #deal_title {
+    position: absolute;
+    text-align: center;
+    width: 26%;
+    top: 20px;
+    left: 37%;
+    h2 {
+      text-transform: uppercase;
+      font: {
+        family: $hel_reg;
+        size: 1.25em;
+        weight: 400;
+      }
+    }
+    img {
+      height: 150px;
+      width: 150px;
+    }
+  }
+  #deal_id {
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    font: {
+      family: $hel_light;
+      size: .95em;
+      weight: 300;
+    }
+    color: #858585;
+  }
+}
+
+/* Graphs */
+
+#referrals_graph,
+#wk-epp-graph,
+#wk-post-graph,
+#wk-earn-graph,
+#wk-percent-graph {
+  text-align: left;
+  margin-left: 1em;
+  margin-top: 34px;
+  margin-bottom: 60px;
+  padding: 0;
+  position: relative;
+  float: left;
+  vertical-align: top;
+  width: 40%;
+  .bar_section, .labels_section {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .bar_section {
+    border-left: 1px solid #B0B0B0;
+    width: 47%;
+    .bar-wrapper {
+      line-height: 2.5em;
+      height: 2.5em;
+      padding: .4em .2em .4em 0;
+      margin: 0;
+      p {
+        margin-left: .5em;
+        vertical-align: top;
+        font: {
+          family: $hel_reg;
+          weight: 400;
+          size: 1.3em;
+        }
+      }
+      .bar_in_chart {
+        background-color: #B0B0B0;
+        display: inline-block;
+        height: 2.5em;
+        line-height: 2.5em;
+        width: 0;
+      }
+      #us_desk_below, #us_mob_below, #intl_desk_below, #intl_mob_below, .bar-value-in {
+        color: white;
+      }
+    }
+  }
+
+  .labels_section {
+    width: 40%;
+    min-width: 242px;
+    div {
+      text-align: right;
+      margin: 1em;
+      height: 2.5em;
+      img {
+        height: 16px;
+        width: 16px;
+      }
+      p {
+        width: 7em;
+        display: inline-block;
+        margin-left: 1em;
+      }
+
+    }
+    #us_mob_label,
+    #intl_mob_label {
+      p {
+        line-height: 2.5em;
+      }
+    }
+    #us_desk_qualified, #us_mob_qualified, #intl_desk_qualified, #intl_mob_qualified {
+      display: inline-block;
+      vertical-align: top;
+      color: rgb(44,180,20);
+      height: 2.5em;
+      line-height: 2.5em;
+      margin-left: 0;
+    }
+  }
+}
+
+
+#referrals_graph .bar_section .bar-wrapper {
+  padding: 0;
+  margin: 1em 1em 1em 0;
+}
+
+.graph-head {
+  text-transform: uppercase;
+  font: {
+    size: 1.3em;
+    family: $hel_light;
+    weight: 300;
+  }
+  margin-bottom: 30px;
+}
+
+.share-to-icon {
+  margin-left: .4em;
+}
+
+.status_icon {
+  margin-right: .3em;
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  vertical-align: -2px;
+}
+
+.post-graph {
+  float: right;
+  vertical-align: top;
+  width: 40%;
+  margin-top: 104px;
+  margin-left: 10%;
+  margin-right: 5em;
+  .posts-current,
+  .graph-shell {
+    height: 3em;
+    line-height: 3em;
+    margin: 0;
+    margin-bottom: 5px;
+    vertical-align: middle;
+    p,
+    .current-num-posts,
+    .current-target-posts {
+      font-size: 1.7em;
+    }
+  }
+  .label {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+}
+
+.graph-dets {
+  clear: both;
+  width: 100%;
+}
+
+.graph-exp {
+  width: 59%;
+  display: inline-block;
+  margin-right: 1.3em;
+  vertical-align: top;
+  text-align: center;
+  font-size: 1em;
+}
+
+.avg-val {
+  color: $sulia-orange;
+  font: {
+    size: 1.5em;
+    family: $hel_reg;
+    weight: 400;
+  }
+}
+
+.centered {
+  text-align: center;
+}
+
+.no-avg {
+  width: 90%;
+  margin: 0;
+}
+
+.avg-post {
+  width: 35%;
+  display: inline-block;
+  text-align: center;
+  .label {
+    margin-bottom: 2px;
+  }
+}
+
+#details_table {
+  margin-bottom: 0;
+}
+
+/* Post Section */
+
+#deal_posts {
+  margin-top: 50px;
+  clear: both;
+}
+
+.post-item {
+  font-size: 1em;
+  td {
+    border-right: 1px solid #b0b0b0;
+    padding: 1em;
+  }
+}
+
+.unqual-row {
+  color: #b0b0b0;
+  .post-refs .post-ref-bar,
+  .post-earn .post-earn-bar {
+    background-color: #b0b0b0;
+  }
+  .post-timestamp .post-date,
+  .post-timestamp .post-time,
+  .post-link .link-out,
+  .post-refs .post-ref-out,
+  .post-earn .post-earn-out {
+    color: #b0b0b0;
+  }
+  .post-title {
+    padding-top: .6em;
+    .unqual-post {
+      margin-bottom: .4em;
+    }
+  }
+}
+
+.post-timestamp {
+  width: 4%;
+}
+
+.post-time {
+  color: #909090;
+  font-size: .8em;
+}
+
+.post-title {
+  width: 48%;
+  font-family: $hel_reg;
+  font-weight: 400;
+}
+
+.post-link {
+  width: 15%;
+  white-space: nowrap;
+}
+
+.post-refs {
+  width: 16.5%;
+}
+
+.post-earn {
+  width: 16.5%;
+}
+
+.post-earn-bar,
+.post-ref-bar {
+  background-color: $sulia-orange;
+  width: 0;
+  height: 2.4em;
+  vertical-align: middle;
+  position: relative;
+  display: inline-block;
+  p {
+    margin: .5em;
+    font: {
+      family: $hel_bold;
+      weight: 700;
+      size: 1em;
+    }
+    position: absolute;
+    vertical-align: middle;
+  }
+}
+
+.post-ref-bar {
+  background-color: #2cb414;
+}
+
+.post-earn-in,
+.post-ref-in {
+  color: white;
+}
+
+.post-earn-out,
+.post-ref-out {
+  display: inline-block;
+  margin-left: .3em;
+  vertical-align: middle;
+  font: {
+      family: $hel_bold;
+      weight: 700;
+      size: 1em;
+  }
+}
+
+.link-out {
+  color: $sulia-orange;
+  font-family: $hel_light;
+  font-weight: 300;
+  &:hover {
+    color: $link-hover-color;
+  }
+}
+
+.post-control,
+.link-to-post,
+.app-link {
+  text-align: center;
+  width: 16%;
+  margin: 0 auto;
+  font-family: $hel_light;
+  font-weight: 300;
+  font-size: 1em;
+  color: $sulia-orange;
+  margin-bottom: 50px;
+  cursor: pointer;
+  &:hover {
+    opacity: .8;
+    color: $link-hover-color;
+  }
+}
+
+.bulleted_list .app-link {
+  color: $sulia-orange;
+}
+
+.app-guideline {
+  margin-left: 2.5em;
+  margin-bottom: 1em;
+  margin-top: 2em;
+  font-size: 1em;
+}
+
+.app-urls {
+  margin-left: 6em;
+}
+
+.and {
+  text-align: center;
+  margin-top: 1.5em;
+  font-size: 1em;
+}
+
+.unqual-post {
+  p {
+    display: inline-block;
+    font: {
+      family: $hel_bold;
+      weight: 700;
+    }
+  }
+  img {
+    vertical-align: middle;
+    height: 10px;
+    width: 10px
+  }
+}
+
+/* Post Popup */
+
+.post-popup {
+  padding: .7em;
+  position: relative;
+  min-height: 420px;
+  min-width: 900px;
+}
+
+.post-content {
+  display: inline-block;
+  width: 49%;
+  padding-right: .5em;
+  min-height: 417px;
+  border-right: 1px solid #b0b0b0;
+  img {
+    width: 350px;
+    margin-bottom: .2em;
+  }
+}
+
+.pop-post-title {
+  margin-bottom: .5em;
+  font: {
+    family: $hel_bold;
+    weight: 700;
+    size: .9em;
+  }
+}
+
+.type-cell {
+  border-right: 1px solid #b0b0b0;
+  text-align: left;
+}
+.ref-cell {
+  border-right: 3px double #b0b0b0;
+  text-align: center;
+  width: 30%;
+}
+
+.earn-cell {
+  text-align: center;
+  width: 30%;
+}
+
+.post-metadata {
+  display: inline-block;
+  position: absolute;
+  font: {
+    family: $hel_light;
+    weight: 300;
+  }
+  padding: 0;
+  width: 47.6%;
+  margin: 0 auto;
+  top: 1em;
+  right: 1.28em;
+  text-align: center;
+}
+
+.post-ref-table {
+  margin: .4em 1em 3em 1.04em;
+  padding-top: 0;
+  .popup-refs-row {
+    border-top-color: transparent;
+    td {
+      padding: .7em;
+    }
+  }
+}
+
+.sub-type {
+  font: {
+    family: $hel_light;
+    weight: 400;
+    size: .85em;
+  }
+  margin-left: 1em;
+}
+
+.link-to-post {
+  border: 1px solid #b0b0b0;
+  padding: .3em 3em;
+  font-size: 1.2em;
+}
+
+.approved-content {
+  font-size: 1em;
+  margin-left: 30px;
+}
+
+/* ==========================================================================
+  	WEEK VIEW
+   ========================================================================== */
+
+/* Header */
+
+.week_header {
+  @include border_box_all;
+  padding: 12px;
+  text-align: center;
+  position: relative;
+  color: black;
+  background-color: white;
+}
+
+.week-graph-titles {
+  text-align: center;
+  .graph-head {
+    &:first-child {
+      margin-left: 13%;
+    }
+    font-size: 1.1em;
+    width: 20.2%;
+    display: inline-block;
+    margin-bottom: 15px;
+    margin-left: .1em;
+    margin-right: .1em;
+  }
+}
+
+#week-graphs {
+  border: 1px solid #d5d5d5;
+  @include border-radius(4px);
+  margin: 0 auto;
+  margin-top: 5px;
+  margin-bottom: 60px;
+  width: 96%;
+}
+
+#wk-post-graph .labels_section .wk-graph-label,
+#wk-earn-graph .labels_section .wk-graph-label,
+#wk-epp-graph .labels_section .wk-graph-label {
+  position: relative;
+  p {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+  }
+}
+
+#wk-post-graph,
+#wk-earn-graph,
+#wk-epp-graph,
+#wk-percent-graph {
+  margin: 0;
+  padding: .5em 0em .5em 0;
+  width: 21.5%;
+  .bar_section {
+    width: 100%;
+    border-left: none;
+    .bar-wrapper {
+      border-bottom: 1px solid #d5d5d5;
+      height: 3.4em;
+      padding-right: 1em;
+      .grn16 {
+        background-color: #c7e9c0;
+        .bar-value-in {
+          color: #565555;
+        }
+      }
+
+      .grn33 {
+        background-color: #a1d99b;
+      }
+
+      .grn50 {
+        background-color: #74c476;
+      }
+
+      .grn66 {
+        background-color: #41ab5d;
+      }
+
+      .grn83 {
+        background-color: #238b45;
+      }
+
+      .grn100 {
+          background-color: #006d2c;
+      }
+
+      .blu16 {
+        background-color: #c6dbef;
+        .bar-value-in {
+          color: #565555;
+        }
+      }
+
+      .blu33 {
+        background-color: #9ecae1;
+      }
+
+      .blu50 {
+        background-color: #6baed6;
+      }
+
+      .blu66 {
+        background-color: #4292c6;
+      }
+
+      .blu83 {
+        background-color: #2171b5;
+      }
+
+      .blu100 {
+          background-color: #08519c;
+      }
+
+      .org16 {
+        background-color: #fee6ce;
+        .bar-value-in {
+          color: #565555;
+        }
+      }
+
+      .org33 {
+        background-color: #fdd0a2;
+        .bar-value-in {
+          color: #565555;
+        }
+      }
+
+      .org50 {
+        background-color: #fdae6b;
+      }
+
+      .org66 {
+        background-color: #fd8d3c;
+      }
+
+      .org83 {
+        background-color: #f16913;
+      }
+
+      .org100 {
+          background-color: $sulia-orange;
+      }
+
+      .unqual-color {
+        background-color: #b0b0b0;
+      }
+    }
+    .last-deal {
+      border: none;
+    }
+  }
+}
+
+#wk-percent-graph {
+  margin-right: 0;
+  .bar_section .bar-wrapper {
+    padding-right: 1em;
+  }
+}
+
+#wk-post-graph {
+  width: 35.5%;
+  .labels_section {
+    min-width: 0px;
+    .wk-graph-label {
+      border-bottom: 1px solid #d5d5d5;
+      height: 3.4em;
+      line-height: 2.2em;
+      margin: 0;
+      padding: .4em .5em .4em .7em;
+      font-family: $hel_bold;
+      font-weight: 700;
+    }
+    .last-deal {
+      border: none;
+    }
+  }
+  .bar_section {
+    width: 60%;
+  }
+}
+/* ==========================================================================
+  	OVERVIEW VIEW
+   ========================================================================== */
+
+.year_heading {
+  width: 96%;
+  margin: 0 auto;
+  position: relative;
+  height: 1em;
+  p {
+    position: absolute;
+    font: {
+      family: $hel_light;
+      size: 1.2em;
+      weight: 300;
+    }
+    color: #b0b0b0;
+  }
+  hr {
+    position: absolute;
+    left: 4em;
+    top: .5em;
+    width: 93%;
+    border: none;
+    border-top: 1px solid #c9c9c9;
+  }
+}
+
+.month_table {
+  margin-bottom: 10px;
+  .wk-list-item {
+    height: 5em;
+    td {
+      text-align: center;
+      &:first-child {
+        width: 26%;
+      }
+      &:nth-child(2), &:nth-child(3), &:nth-child(5) {
+        width: 13%;
+      }
+      &:nth-child(4), &:nth-child(6) {
+        width: 17%;
+      }
+      &:last-child {
+        font-family: $hel_bold;
+        font-weight: 700;
+      }
+    }
+  }
+  .table_head {
+    &:hover {
+      cursor: pointer;
+      opacity: .8;
+    }
+    height: 2em;
+    color: black;
+    font: {
+      family: $hel_reg;
+      size: 1.4em;
+      weight: 400;
+    }
+    th {
+      position: relative;
+      padding: .2em;
+      &:first-child {
+        padding-left: .5em;
+        text-align: left;
+      }
+      &:last-child {
+        width: 17%;
+      }
+    }
+  }
+  .table_labels {
+    border-top: 1px solid #b0b0b0;
+    height: 2em;
+    td {
+      padding: 1em;
+      text-align: center;
+      &:last-child {
+        font-family: $hel_light;
+        font-weight: 300;
+      }
+    }
+  }
+}
+
+#post_table {
+  margin-bottom: 30px;
+}
+
+/* ==========================================================================
+  	Helper Class
+   ========================================================================== */
+
+.hidden {
+  display: none;
+}
+
+#deals_tab .left_content {
+  background-color: white;
+  width: 80%;
+  margin: 0 auto;
+  padding-left: 2em;
+  margin-top: 50px;
+  @include border-radius(4px);
+  p {
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+  img {
+    border: 1px solid #b0b0b0;
+  }
+}
+
+.clickable_response:hover {
+  cursor: pointer;
+}
+
+.drop_down {
+  border: 1px solid #B0B0B0;
+  position: absolute;
+  top: 55%;
+  z-index: 99;
+  background-color: white;
+}
+
+.tbl-cell-relative {
+  position: relative;
+  width: 100%;
+  padding: 1em;
+  margin: 0;
+  height: 100%;
+  vertical-align: top;
+}
+
+.wk-cell {
+  padding-top: 1.8em;
+  padding-bottom: 1.8em;
+}
+
+.arrow_down {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #909090;
+  margin-left: 5px;
+}
+
+.chevron {
+  display: inline-block;
+  margin-right: .4em;
+}
+
+.chevron::before {
+  border-style: solid;
+  border-width: 0.1em 0.1em 0 0;
+  content: '';
+  display: inline-block;
+  height: 0.35em;
+  left: 0.15em;
+  position: relative;
+  top: .48em;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  vertical-align: top;
+  width: 0.35em;
+}
+
+.chevron.right:before {
+  left: 0;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+}
+
+.chevron.bottom:before {
+  top: .4em;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}

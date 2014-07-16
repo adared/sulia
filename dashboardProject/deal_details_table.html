@@ -1,0 +1,172 @@
+{% load customtags %}
+<tr class="details_row">
+    <td class="rate_cell">
+        <div class="tbl-cell-relative">
+            {% if deal.terms_flat_rate %}
+                <p>Flat Rate</p>
+                <p><span>${{ deal.min_payout|currency }}</span></p>
+            {% else %}
+                <p>Per Referral</p>
+                {% if deal.val_per_referral > 0 %}
+                    <p><span>{{deal.val_per_referral|floatformat:"-2"}}&cent;</span> Desktop &amp; Tablet</p>
+                    <p><span>{{deal.val_per_referral|floatformat:"-2"}}&cent;</span> Mobile</p>
+                {% else %}
+                    {% if deal.val_per_ref_US_desk > 0 %}
+                        <p><span>{{ deal.val_per_ref_US_desk|floatformat:"-2" }}&cent;</span> US Desktop &amp; Tablet</p>
+                    {% endif %}
+                    {% if deal.val_per_ref_US_mob > 0 %}
+                        <p><span>{{ deal.val_per_ref_US_mob|floatformat:"-2" }}&cent;</span> US Mobile</p>
+                    {% endif %}
+                    {% if deal.val_per_ref_INTL_desk > 0 %}
+                        <p><span>{{ deal.val_per_ref_INTL_desk|floatformat:"-2" }}&cent;</span> INTL Desktop &amp; Tablet</p>
+                    {% endif %}
+                    {% if deal.val_per_ref_INTL_mob > 0 %}
+                        <p><span>{{ deal.val_per_ref_INTL_mob|floatformat:"-2" }}&cent;</span> INTL Mobile</p>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="vertical_rule"></div>
+    </td>
+
+    <td class="terms_cell">
+        <div class="tbl-cell-relative">
+            {% if deal.terms_post_min %}
+                <p class="main_term">{{ deal.min_posts }} Qualified Post{{ deal.min_posts|pluralize }}</p>
+            {% elif deal.terms_ref_min %}
+                <p class="main_term">${{ deal.min_payout|currency }} worth of referrals</p>
+            {% else %}
+                <p class="main_term">Post as much as you'd like.</p>
+            {% endif %}
+            {% if deal.is_external or deal.len_or_image or deal.char_min or deal.has_image or deal.tw_propagation or deal.fb_propagation or deal.google_propagation or deal.linkedin_propagation %}
+                <ul class="bulleted_list">
+                    {% if deal.is_external %}
+                        {% if deal.domains|length == 1 %}
+                            <li>Link to approved content on {{ deal.domains.0 }}</li>
+                        {% else %}
+                            <li>Link to approved content</li>
+                        {% endif %}
+                    {% endif %}
+                    {% if deal.len_or_image %}
+                        <li>{{ deal.char_min }} character{{ deal.char_min|pluralize }} <b>OR</b> Include image or video</li>
+                    {% else %}
+                        {% if deal.char_min %}
+                            <li>{{ deal.char_min }} character{{ deal.char_min|pluralize }}</li>
+                        {% endif %}
+                        {% if deal.has_image %}
+                            <li>Include image or video</li>
+                        {% endif %}
+                    {% endif %}
+                    {% if deal.tw_propagation or deal.fb_propagation or deal.google_propagation or deal.linkedin_propagation %}
+                        <li>
+                            <p>Shared to:</p>
+                            {% if deal.tw_propagation %}
+                                <img class="share-to-icon" src="{{ MEDIA_URL }}images/share/Twitter.42x42.png">
+                            {% endif %}
+                            {% if deal.fb_propagation %}
+                                <img class="share-to-icon" src="{{ MEDIA_URL }}images/share/facebook.42x42.png">
+                            {% endif %}
+                            {% if deal.google_propagation %}
+                                <img class="share-to-icon" src="{{ MEDIA_URL }}images/share/gPlus_badge_red.42x42.png">
+                            {% endif %}
+                            {% if deal.linkedin_propagation %}
+                                <img class="share-to-icon" src="{{ MEDIA_URL }}images/share/linkedin.42x42.png">
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+        <div class="vertical_rule"></div>
+    </td>
+
+    {% if deal.terms_pay_floor or deal.terms_guarantee_min %}
+        <td class="guarantee_cell target_cell">
+            <div class="tbl-cell-relative">
+                <p>${{ deal.min_payout|currency }}</p>
+            </div>
+            <div class="vertical_rule"></div>
+        </td>
+    {% endif %}
+
+    <td class="target_cell">
+        <div class="tbl-cell-relative">
+            {% if deal.terms_flat_rate %}
+                <p>${{ deal.min_payout|currency }}</p>
+            {% else %}
+                <p>${{ deal.max_payout|currency }}</p>
+                <p>maximum</p>
+            {% endif %}
+        </div>
+        <div class="vertical_rule"></div>
+    </td>
+
+    <td class="status_cell">
+        <div class="tbl-cell-relative">
+            {% if deal.accepted_state == 2 %}
+                <img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png">
+                <p>Accepted</p>
+            {% elif deal.accepted_state == 1 %}
+                <img class="status_icon" src="{{ MEDIA_URL }}images/red-ex.png">
+                <p>Declined</p>
+            {%  else  %}
+                <div class="clickable_response">
+                    <img class="status_icon" src="{{ MEDIA_URL }}images/yellow-alert.png">
+                    <p>Pending</p>
+                    <div class="arrow_down"></div>
+                    <div class="deal_respond drop_down hidden" data-deal={{ deal.deal_id }}>
+                        <div class="deal_respond_yes">
+                            <img class="status_icon" src="{{ MEDIA_URL }}images/greencheck.png" />
+                            <p>Accept</p>
+                        </div>
+                        <div class="deal_respond_no">
+                            <img class="status_icon" src="{{ MEDIA_URL }}images/red-ex.png" />
+                            <p>Decline</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="vertical_rule"></div>
+    </td>
+
+    <td class="payment_cell">
+        <div class="tbl-cell-relative">
+            {% if deal.deal_closed %}
+                {% if deal.paid %}
+                    <div class="clickable_response">
+                        <p id="pay_amt">${{ deal.payment|currency }}</p>
+                        <div class="arrow_down"></div>
+                        <div class="payment_details drop_down hidden">
+                            <p>Payment total ${{ deal.payment|currency }}</p>
+                            {% if deal.payment_date %}
+                                <p>Sent on {{ deal.payment_date|date:"F j Y g:iA" }} UTC</p>
+                            {% else %}
+                                <p>Payment Pending</p>
+                            {% endif %}
+                            <hr />
+                            <p>Deal ID: {{ deal.deal_id }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    {% if deal.current_value > 0 %}
+                        <div class="clickable_response">
+                            <p id="pay_amt">${{ deal.current_value|currency }}</p>
+                            <div class="arrow_down"></div>
+                            <div class="payment_details drop_down hidden">
+                                <p>Payment total ${{ deal.current_value|currency }}</p>
+                                <p>Payment Pending</p>
+                                <hr />
+                                <p>Deal ID: {{ deal.deal_id }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>&ndash; &ndash;</p>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <p>&ndash; &ndash;</p>
+            {% endif %}
+        </div>
+    </td>
+</tr>

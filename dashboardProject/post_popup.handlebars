@@ -1,0 +1,51 @@
+<div class="post-popup">
+    <div class="post-content">
+        <p class="pop-post-title">{{{title}}}</p>
+        <img class="post-img" src="{{image.url}}">
+        {{#if text}}
+            <p>{{{text}}}</p>
+        {{/if}}
+    </div>
+
+    <div class="post-metadata">
+        <table class="post-ref-table">
+            <tr class="table_head">
+                <th class="type-cell">Type</th>
+                <th class="ref-cell">Referrals</th>
+                <th class="earn-cell">Earnings</th>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell">US Total</td>
+                <td class="ref-cell">{{qualified_referrals.us}}</td>
+                <td class="earn-cell earn-">&mdash; &mdash;</td>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell"><p class="sub-type">Desktop &amp; Tablet</p></td>
+                <td class="ref-cell">{{qualified_referrals.us_desk}}</td>
+                <td class="earn-cell">&mdash; &mdash;</td>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell"><p class="sub-type">Mobile</p></td>
+                <td class="ref-cell">{{qualified_referrals.us_mob}}</td>
+                <td class="earn-cell">&mdash; &mdash;</td>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell">International Total</td>
+                <td class="ref-cell">{{qualified_referrals.intl}}</td>
+                <td class="earn-cell">&mdash; &mdash;</td>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell"><p class="sub-type">Desktop &amp; Tablet</p></td>
+                <td class="ref-cell">{{qualified_referrals.intl_desk}}</td>
+                <td class="earn-cell">&mdash; &mdash;</td>
+            </tr>
+            <tr class="popup-refs-row">
+                <td class="type-cell"><p class="sub-type">Mobile</p></td>
+                <td class="ref-cell">{{qualified_referrals.intl_mob}}</td>
+                <td class="earn-cell">&mdash; &mdash;</td>
+            </tr>
+        </table>
+
+        <a class="link-to-post" href="{{url}}" target="_blank">View on Sulia</a>
+    </div>
+</div>

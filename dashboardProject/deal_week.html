@@ -1,0 +1,193 @@
+{% extends 'base_1col.html' %}
+{% load customtags %}
+{% if page_model.source|is_user:request.user or request.user.is_staff %}
+{% block extradata %}
+    window.sulia.data.percent_complete = {% widthratio current target 100 %};
+    window.sulia.data.current = {{ current }};
+    window.sulia.data.earned_vals = [
+        {% for deal in deals %}
+            {% if deal.qualified_posts < deal.min_posts %}
+                {{ deal.qualified_value }}
+            {% else %}
+                {{ deal.current_value }}
+            {% endif %}
+            {% if not forloop.last and deals.count > 1 %},{% endif %}
+        {% endfor %}
+    ];
+    window.sulia.data.avg_vals = [
+        {% for deal in deals %}
+            {% if deal.qualified_posts > 0 or deal.extra_posts > 0 %}
+                {{ deal.mean_post_value }}
+            {% else %}
+                 0
+            {% endif %}
+            {% if not forloop.last and deals.count > 1 %},{% endif %}
+        {% endfor %}
+    ];
+    window.sulia.data.post_count = [
+        {% for deal in deals %}
+            {{ deal.qualified_posts }}{% if not forloop.last and deals.count > 1 %},{% endif %}
+        {% endfor %}
+    ];
+    window.sulia.data.percent_vals = [
+        {% for deal in deals %}
+            {% if deal.terms_flat_rate %}
+                {% widthratio deal.current_value deal.min_payout 100 %}
+            {% elif deal.qualified_posts < deal.min_posts %}
+                {% widthratio deal.qualified_value deal.max_payout 100 %}
+            {% else %}
+                {% widthratio deal.current_value deal.max_payout 100 %}
+            {% endif %}
+            {% if not forloop.last and deals.count > 1 %},{% endif %}
+        {% endfor %}
+    ];
+    window.sulia.data.deals = {{ deals_json|safe }};
+{% endblock %}
+{% block main-content-area %}
+{% spaceless %}
+    <div class="breadcrumbs">
+        <a href="{% url 'deal:deal_overview' %}{% if deal_user_id %}?uid={{ deal_user_id }}{% endif %}">My Deals</a>
+        <p><span>?</span> {{ start|date:"F j" }} &ndash; {{ end|date:"F j" }}</p>
+    </div>
+    <div class="main_content">
+        <div class="week_header">
+            <div id="active_deals_title">
+                {% if delta < 0 %}
+                    <h2>past deals</h2>
+                {% elif delta == 0 %}
+                    <h2>active deals</h2>
+                {% else %}
+                    <h2>future deals</h2>
+                {% endif %}
+                <hr />
+                <div id="dates">
+                    <p id="start-date">{{ start|date:"F j Y g:iA" }} UTC &ndash;</p>
+                    <p id="end-date">{{ end|date:"F j Y g:iA" }} UTC</p>
+                </div>
+            </div>
+        </div>
+
+		<div id="cash_bar">
+			<div id="total_remaining">
+                <div id="total_earned">
+                    <p id="total_percent" class="label hidden">{% widthratio current target 100 %}%</p>
+                    <p id="earned_current" class="hidden">${{ current|currency }}</p>
+                    <p id="earned_target" class="hidden">${{ target|currency }}</p>
+                </div>
+                <p id="remaining_current" class="hidden">${{ current|currency }}</p>
+				<p id="remaining_target" class="hidden">${{ target|currency }}</p>
+			</div>
+			<p class="label" id="total_current">current</p>
+			<p class="label" id="total_target">target</p>
+		</div>
+
+        <div class="week-graph-titles">
+            <h3 class="graph-head">total posts</h3>
+            <h3 class="graph-head">total earned</h3>
+            <h3 class="graph-head">earnings per post</h3>
+            <h3 class="graph-head">percent completed</h3>
+        </div>
+
+        <div id="week-graphs" class="clearfix">
+            <div id="wk-post-graph" class="wk-bar-chart">
+                <div class="labels_section">
+                    {% for deal in deals %}
+                        {% if forloop.last %}<div class="wk-graph-label last-deal">{% else %}<div class="wk-graph-label">{% endif %}
+                            <p>{{ deal.name|truncatechars:18 }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="bar_section">
+                    {% for deal in deals %}
+                        {% if forloop.last %}<div class="bar-wrapper last-deal">{% else %}<div class="bar-wrapper">{% endif %}
+                            <div class="bar_in_chart num-posts-bar {% if deal.qualified_posts < deal.min_posts %}unqual-color{% endif %}">
+                                <p class="bar-value-in hidden">{{ deal.qualified_posts }}</p>
+                            </div>
+                            <p class="bar-value-out hidden">{{ deal.qualified_posts }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="wk-earn-graph" class="wk-bar-chart">
+                <div class="bar_section">
+                    {% for deal in deals %}
+                        {% if forloop.last %}<div class="bar-wrapper last-deal">{% else %}<div class="bar-wrapper">{% endif %}
+                            {% if deal.qualified_posts < deal.min_posts %}
+                                <div class="bar_in_chart earned-bar unqual-color">
+                                    <p class="bar-value-in hidden">${{ deal.qualified_value|currency }}</p>
+                                </div>
+                                <p class="bar-value-out hidden">${{ deal.qualified_value|currency }}</p>
+                            {% else %}
+                                <div class="bar_in_chart earned-bar">
+                                    <p class="bar-value-in hidden">${{ deal.current_value|currency }}</p>
+                                </div>
+                                <p class="bar-value-out hidden">${{ deal.current_value|currency }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="wk-epp-graph" class="wk-bar-chart">
+                <div class="bar_section">
+                    {% for deal in deals %}
+                        {% if forloop.last %}<div class="bar-wrapper last-deal">{% else %}<div class="bar-wrapper">{% endif %}
+                            <div class="bar_in_chart avg-val-bar {% if deal.qualified_posts < deal.min_posts %}unqual-color{% endif %}">
+                                <p class="bar-value-in hidden">{% if deal.qualified_posts > 0 or deal.extra_posts > 0 %}${{ deal.mean_post_value|currency }}{% else %}N/A{% endif %}</p>
+                            </div>
+                            <p class="bar-value-out hidden">{% if deal.qualified_posts > 0 or deal.extra_posts > 0 %}${{ deal.mean_post_value|currency }}{% else %}N/A{% endif %}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="wk-percent-graph" class="wk-bar-chart">
+                <div class="bar_section">
+                    {% for deal in deals %}
+                        {% if forloop.last %}<div class="bar-wrapper last-deal">{% else %}<div class="bar-wrapper">{% endif %}
+                            {% if deal.terms_flat_rate %}
+                                <div class="bar_in_chart percent-bar">
+                                    <p class="bar-value-in hidden">{% widthratio deal.current_value deal.min_payout 100 %}%</p>
+                                </div>
+                                <p class="bar-value-out hidden">{% widthratio deal.current_value deal.min_payout 100 %}%</p>
+                            {% elif deal.qualified_posts < deal.min_posts %}
+                                <div class="bar_in_chart percent-bar unqual-color">
+                                    <p class="bar-value-in hidden">{% widthratio deal.qualified_value deal.max_payout 100 %}%</p>
+                                </div>
+                                <p class="bar-value-out hidden">{% widthratio deal.qualified_value deal.max_payout 100 %}%</p>
+                            {% else %}
+                                <div class="bar_in_chart percent-bar">
+                                    <p class="bar-value-in hidden">{% widthratio deal.current_value deal.max_payout 100 %}%</p>
+                                </div>
+                                <p class="bar-value-out hidden">{% widthratio deal.current_value deal.max_payout 100 %}%</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <table id="deals_list">
+            <tr class="table_head">
+                <th>Campaign</th>
+                <th>Rate</th>
+                <th>Terms</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Payment</th>
+            </tr>
+
+            {% for deal in deals %}
+                {% include "deals/deal_week_table_display.html" %}
+            {% endfor %}
+        </table>
+    </div>
+{% endspaceless %}
+{%  endblock %}
+{%  endif %}
+
+{% block image-error-cleanup %}
+    <script type="text/javascript">$('img').error(function() {if ($(this).hasClass('brand_logo')) {this.src="{{ MEDIA_URL }}images/sulia-default-image.png";} else { var $images = $('img[src="' + this.src + '"]'); $images.remove(); }});</script>
+{% endblock %}
